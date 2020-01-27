@@ -14,6 +14,15 @@ class SwipeLeftToDeleteCallback(private var adapter: TodoListsAdapter) :
     private val background = ColorDrawable(Color.RED)
     private val icon = ContextCompat.getDrawable(App.applicationContext, android.R.drawable.ic_delete)
 
+    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+        val superResult = super.getMovementFlags(recyclerView, viewHolder)
+        if (adapter.deletable(viewHolder.adapterPosition)) {
+            return 0
+        }
+
+        return superResult
+    }
+
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val position = viewHolder.adapterPosition
         adapter.delete(position)

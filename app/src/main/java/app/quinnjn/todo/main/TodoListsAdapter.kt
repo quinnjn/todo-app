@@ -36,7 +36,7 @@ class TodoListsAdapter: RecyclerView.Adapter<TodoListsAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val description = data.get(position)
         val displayValue = description.replace("#", "")
-        val textTypeface = if (description.contains("#")) {
+        val textTypeface = if (isHeader(description)) {
             Typeface.BOLD
         } else {
             Typeface.NORMAL
@@ -53,6 +53,9 @@ class TodoListsAdapter: RecyclerView.Adapter<TodoListsAdapter.ViewHolder>() {
             }
         }
     }
+
+    private fun isHeader(str: String): Boolean = str.contains("#")
+    fun deletable(position: Int): Boolean = isHeader(data.get(position))
 
     fun delete(position: Int): Boolean {
         if (IO.deleteList(data.get(position))) {
