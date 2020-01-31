@@ -3,6 +3,7 @@ package app.quinnjn.todo.create
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import app.quinnjn.todo.IO
@@ -23,12 +24,29 @@ class CreateActivity: AppCompatActivity() {
 
         fab.setOnClickListener {
             val name = name.text.toString()
+            val contents = edit_text_content.text.toString()
             val type = if (radio_list.isChecked) {
                 IO.Companion.LIST_TYPES.LIST
             } else {
                 IO.Companion.LIST_TYPES.TEMPLATE
 
             }
+
+            if (!radio_list.isChecked && !radio_template.isChecked) {
+                showError("Select a list kind")
+                return@setOnClickListener
+            }
+
+            if (name.isEmpty()) {
+                showError("Enter a name for the list")
+                return@setOnClickListener
+            }
+
+            if (contents.isEmpty()) {
+                showError("Enter list contents")
+                return@setOnClickListener
+            }
+
             val models = mutableListOf<String>()
 
             templates.forEach {
@@ -39,12 +57,17 @@ class CreateActivity: AppCompatActivity() {
                 }
             }
 
-            controller.save(
+            val error = controller.save(
                 name,
                 type,
                 models,
-                edit_text_content.text.toString()
+                contents
             )
+
+            error?.let {
+                showError(error)
+                return@setOnClickListener
+            }
 
             finish()
         }
@@ -58,7 +81,10 @@ class CreateActivity: AppCompatActivity() {
 
             templates.addView(view)
         }
+    }
 
+    private fun showError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
