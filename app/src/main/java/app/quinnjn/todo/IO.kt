@@ -1,9 +1,8 @@
 package app.quinnjn.todo
 
 import java.io.File
-import java.lang.RuntimeException
 
-class IO() {
+class IO {
     companion object {
         enum class LIST_TYPES {
             LIST,
