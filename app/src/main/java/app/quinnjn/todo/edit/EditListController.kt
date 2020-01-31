@@ -10,16 +10,19 @@ class EditListController {
         return file.readText()
     }
 
-    fun save(file: File, models: String) {
+    fun save(file: File, models: String): String? {
         if (!file.exists()) {
             file.createNewFile()
         }
 
         // Verify that the models are valid
 
-        if (verify(models)) {
-            file.writeText(models)
+        if (!verify(models)) {
+            return "Changes are not valid"
         }
+
+        file.writeText(models)
+        return null
     }
 
     private fun verify(models: String): Boolean {

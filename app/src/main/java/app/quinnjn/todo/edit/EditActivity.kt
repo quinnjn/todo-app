@@ -3,6 +3,7 @@ package app.quinnjn.todo.edit
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import app.quinnjn.todo.*
 import kotlinx.android.synthetic.main.activity_edit.*
@@ -18,16 +19,29 @@ class EditActivity: AppCompatActivity() {
         controller.load(editFile)
     }
 
-    override fun onPause() {
-        controller.save(editFile, edit_text.text.toString())
-
-        super.onPause()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
         edit_text.setText(rawYaml)
+
+        fab.setOnClickListener {
+            save()
+        }
+    }
+
+    private fun save() {
+        val errors = controller.save(editFile, edit_text.text.toString())
+
+        errors?.let {
+            showError(it)
+            return
+        }
+
+        finish()
+    }
+
+    private fun showError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
